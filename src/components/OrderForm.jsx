@@ -78,29 +78,48 @@ const OrderForm = ({ selectedItems, onBack }) => {
     }
 
     // Create order summary
-    const orderMsg = `*🍽️ NEW ORDER ALERT 🍽️*\n
-*Order ID:* ${Math.floor(1000 + Math.random() * 9000)}\n
-*Customer Details:*
-👤 *Name:* ${formData.customerName}
-📞 *Phone:* ${formData.phone}
-📧 *Email:* ${formData.email || "Not provided"}
-📍 *Address:* ${formData.address}\n
-*Order Items:*
-${selectedItems
-  .map(
-    (item) =>
-      `➡️ ${item.name} (Qty: ${item.quantity || 1}) - Rs. ${
-        item.price * (item.quantity || 1)
-      }`
-  )
-  .join("\n")}\n
-*Special Instructions:*
-${formData.specialInstructions || "None"}\n
-*Order Total:* Rs. ${selectedItems.reduce(
-      (sum, item) => sum + item.price * (item.quantity || 1),
-      0
-    )}\n
-Thank you!`;
+        const orderMsg = `*🍽️ NEW ORDER ALERT 🍽️*\n
+    *Order ID:* ${Math.floor(1000 + Math.random() * 9000)}\n
+    *Customer Details:*
+    👤 *Name:* ${formData.customerName}
+    📞 *Phone:* ${formData.phone}
+    📧 *Email:* ${formData.email || "Not provided"}
+    📍 *Address:* ${formData.address}\n
+    *Order Items:*
+    ${selectedItems
+      .map(
+        (item) =>
+          `➡️ ${item.name} (Qty: ${item.quantity || 1}) - Rs. ${
+            item.price * (item.quantity || 1)
+          }`
+      )
+      .join("\n")}\n
+    *Special Instructions:*
+    ${formData.specialInstructions || "None"}\n
+    *Order Total:* Rs. ${selectedItems.reduce(
+          (sum, item) => sum + item.price * (item.quantity || 1),
+          0
+        )}\n
+    Thank you!`;
+
+    // const orderMsg = {
+    //   orderId: Math.floor(1000 + Math.random() * 9000),
+    //   customerName: formData.customerName,
+    //   phone: formData.phone,
+    //   email: formData.email || "Not provided",
+    //   address: formData.address,
+    //   items: selectedItems.map(item => ({
+    //     name: item.name,
+    //     quantity: item.quantity || 1,
+    //     price: item.price,
+    //     total: item.price * (item.quantity || 1)
+    //   })),
+    //   specialInstructions: formData.specialInstructions || "None",
+    //   totalPrice: selectedItems.reduce(
+    //     (sum, item) => sum + item.price * (item.quantity || 1),
+    //     0
+    //   ),
+    // };
 
     try {
       const response = await fetch("/api/send-order", {
@@ -112,22 +131,19 @@ Thank you!`;
       });
 
       const result = await response.json();
-      console.log(response)
+      console.log(response);
       if (response.ok) {
         toast.success("Order Recieved. Thank you for ordering!");
 
         setTimeout(() => {
           onBack(); // This will go back to the menu page
         }, 2000);
-
       } else {
         throw new Error(result.error);
       }
     } catch (error) {
       toast("Something went wrong");
     }
-
-
   };
 
   return (

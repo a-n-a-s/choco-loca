@@ -1,26 +1,31 @@
 import { NextResponse } from "next/server";
-import twilio from "twilio";
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
+import axios from "axios";
 
 export async function POST(request) {
   try {
     const { message } = await request.json();
 
-    const twilioMessage = await client.messages.create({
-      body: message,
-      from: "whatsapp:+14155238886",
-      to: "whatsapp:+919347368822",
+    const response = await await axios.post(`https://api.telegram.org/bot7762046637:AAFVXDzDYPELBYjxSxaYGidzg7nIpt5qILY/sendMessage`, {
+      chat_id: 6197103835,
+      text: message,
     });
-    // 722971373536802
+    
+
+    console.log(response.data)
+
+    if (response.data.error) {
+      throw new Error(response.data.error.message);
+    }
 
     return NextResponse.json({
       success: true,
-      message: twilioMessage.body,
+      message: response.data,
     });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("WhatsApp API Error:", error.response?.data || error.message);
+    return NextResponse.json(
+      { error: error.response?.data?.error?.message || error.message },
+      { status: 500 }
+    );
   }
 }
