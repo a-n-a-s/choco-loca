@@ -87,6 +87,10 @@ export default function Home() {
                 setSelectedItems([]);
                 router.push("/");
               }}
+              onGalleryBack={() => {
+                setShowOrderForm(true);
+                router.push("/");
+              }}
             />
           ) : (
             <>
